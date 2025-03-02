@@ -12,9 +12,9 @@
 
 # Flex & Bison generated files
 lex.yy.c
-y.tab.c
-y.tab.h
-y.output
+*.tab.c
+*.tab.h
+*.output
 
 # C/C++ compiled object files
 *.obj
@@ -38,3 +38,8 @@ Thumbs.db
 bin/
 build/
 dist/
+
+# documents file
+*.doc
+*.docx
+*.pdf
