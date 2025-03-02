@@ -1,0 +1,40 @@
+# VS Code specific files
+.vscode/
+*.code-workspace
+
+# Build artifacts
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dylib
+
+# Flex & Bison generated files
+lex.yy.c
+y.tab.c
+y.tab.h
+y.output
+
+# C/C++ compiled object files
+*.obj
+*.gch
+*.pch
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*.swn
+
+# Logs and temporary files
+*.log
+*.tmp
+*.~*
+.DS_Store
+Thumbs.db
+
+# Compiled binary output
+bin/
+build/
+dist/
