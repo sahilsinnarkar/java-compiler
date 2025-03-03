@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parser.tab.h"  // Bison-generated header
+#include "parser.tab.h"
 #ifndef strdup
 #define strdup _strdup
 #endif
@@ -34,7 +34,7 @@
 "<"            { printf("Token: LT\n"); return LT; }
 [0-9]+         { printf("Token: NUMBER (%s)\n", yytext); yylval.ival = atoi(yytext); return NUMBER; }
 [a-zA-Z_][a-zA-Z0-9_]* { printf("Token: IDENTIFIER (%s)\n", yytext); yylval.sval = strdup(yytext); return IDENTIFIER; }
-[ \t\r\n]+    { /* ignore whitespace */ }
+[ \t\r\n]+
 .              { printf("Unexpected character: %s\n", yytext); }
 
 %%
