@@ -32,6 +32,17 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* "%code requires" blocks.  */
+
+/* Line 1676 of yacc.c  */
+#line 26 "parser.y"
+
+    #include "ast.h"
+
+
+
+/* Line 1676 of yacc.c  */
+#line 46 "parser.tab.h"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -39,34 +50,22 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     INT = 258,
-     FLOAT = 259,
-     IF = 260,
-     ELSE = 261,
-     SWITCH = 262,
-     CASE = 263,
-     DEFAULT = 264,
-     FOR = 265,
-     WHILE = 266,
-     DO = 267,
-     BREAK = 268,
-     CONTINUE = 269,
-     LBRACE = 270,
-     RBRACE = 271,
-     LPAREN = 272,
-     RPAREN = 273,
-     SEMICOLON = 274,
-     ASSIGN = 275,
-     COLON = 276,
-     GT = 277,
-     LT = 278,
-     EQ = 279,
-     NE = 280,
-     NUMBER = 281,
-     FLOAT_NUM = 282,
-     IDENTIFIER = 283,
-     END = 284,
-     PLUS = 285
+     NUMBER = 258,
+     FLOAT_NUM = 259,
+     IDENTIFIER = 260,
+     IF = 261,
+     ELSE = 262,
+     INT = 263,
+     FLOAT = 264,
+     LBRACE = 265,
+     RBRACE = 266,
+     LPAREN = 267,
+     RPAREN = 268,
+     SEMICOLON = 269,
+     ASSIGN = 270,
+     GT = 271,
+     PLUS = 272,
+     END = 273
    };
 #endif
 
@@ -77,17 +76,17 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 65 "parser.y"
+#line 30 "parser.y"
 
     int ival;
     double dval;
     char *sval;
-    struct ASTNode *node;
+    ASTNode *node;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 91 "parser.tab.h"
+#line 90 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

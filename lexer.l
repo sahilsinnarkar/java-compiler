@@ -24,18 +24,23 @@ void yyerror(const char *s);
 "="             { return ASSIGN; }
 ">"             { return GT; }
 "+"             { return PLUS; }
+
+[0-9]+\.[0-9]+  { yylval.dval = atof(yytext); return FLOAT_NUM; }
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
-[0-9]*\.[0-9]+  { yylval.dval = atof(yytext); return FLOAT_NUM; }
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return IDENTIFIER; }
-[ \t\n]         { /* ignore whitespace */ }
-.               { 
-                 fprintf(stderr, "Lexical error at line %d: Unexpected character '%s'\n", 
-                         yylineno, yytext); 
-                 exit(1);
-               }
-<<EOF>> {
-    printf("End of input reached\n");
-    return 0;
+[\n]            { yylineno++; /* Just count lines, don't return anything */ }
+
+[a-zA-Z_][a-zA-Z0-9_]* {
+    yylval.sval = strdup(yytext);
+    return IDENTIFIER;
 }
 
+[ \t\r\n]+      { /* skip whitespace */ }
+
+<<EOF>>         { return END; }
+
+. {
+    fprintf(stderr, "Lexical error at line %d: Unexpected character '%s'\n", 
+            yylineno, yytext);
+    exit(1);
+}
 %%
