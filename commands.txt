@@ -1,0 +1,7 @@
+bison -d parser.y
+
+flex lexer.l
+
+gcc -o compiler lex.yy.c parser.tab.c -lm
+
+compiler.exe

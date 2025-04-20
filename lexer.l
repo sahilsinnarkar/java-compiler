@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "parser.tab.h"
-#ifndef strdup
-#define strdup _strdup
-#endif
+
+void yyerror(const char *s);
 %}
 
 %option noyywrap
@@ -13,28 +12,30 @@
 
 %%
 
-"if"           { printf("Token: IF\n"); return IF; }
-"else"         { printf("Token: ELSE\n"); return ELSE; }
-"switch"       { printf("Token: SWITCH\n"); return SWITCH; }
-"case"         { printf("Token: CASE\n"); return CASE; }
-"default"      { printf("Token: DEFAULT\n"); return DEFAULT; }
-"for"          { printf("Token: FOR\n"); return FOR; }
-"while"        { printf("Token: WHILE\n"); return WHILE; }
-"do"           { printf("Token: DO\n"); return DO; }
-"break"        { printf("Token: BREAK\n"); return BREAK; }
-"continue"     { printf("Token: CONTINUE\n"); return CONTINUE; }
-"{"            { printf("Token: LBRACE\n"); return LBRACE; }
-"}"            { printf("Token: RBRACE\n"); return RBRACE; }
-"("            { printf("Token: LPAREN\n"); return LPAREN; }
-")"            { printf("Token: RPAREN\n"); return RPAREN; }
-":"            { printf("Token: COLON\n"); return COLON; }
-";"            { printf("Token: SEMICOLON\n"); return SEMICOLON; }
-"="            { printf("Token: ASSIGN\n"); return ASSIGN; }
-">"            { printf("Token: GT\n"); return GT; }
-"<"            { printf("Token: LT\n"); return LT; }
-[0-9]+         { printf("Token: NUMBER (%s)\n", yytext); yylval.ival = atoi(yytext); return NUMBER; }
-[a-zA-Z_][a-zA-Z0-9_]* { printf("Token: IDENTIFIER (%s)\n", yytext); yylval.sval = strdup(yytext); return IDENTIFIER; }
-[ \t\r\n]+
-.              { printf("Unexpected character: %s\n", yytext); }
+"if"            { return IF; }
+"else"          { return ELSE; }
+"int"           { return INT; }
+"float"         { return FLOAT; }
+"{"             { return LBRACE; }
+"}"             { return RBRACE; }
+"("             { return LPAREN; }
+")"             { return RPAREN; }
+";"             { return SEMICOLON; }
+"="             { return ASSIGN; }
+">"             { return GT; }
+"+"             { return PLUS; }
+[0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
+[0-9]*\.[0-9]+  { yylval.dval = atof(yytext); return FLOAT_NUM; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return IDENTIFIER; }
+[ \t\n]         { /* ignore whitespace */ }
+.               { 
+                 fprintf(stderr, "Lexical error at line %d: Unexpected character '%s'\n", 
+                         yylineno, yytext); 
+                 exit(1);
+               }
+<<EOF>> {
+    printf("End of input reached\n");
+    return 0;
+}
 
 %%

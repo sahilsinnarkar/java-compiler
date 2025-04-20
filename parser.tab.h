@@ -39,27 +39,34 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     IF = 258,
-     ELSE = 259,
-     SWITCH = 260,
-     CASE = 261,
-     DEFAULT = 262,
-     FOR = 263,
-     WHILE = 264,
-     DO = 265,
-     BREAK = 266,
-     CONTINUE = 267,
-     LBRACE = 268,
-     RBRACE = 269,
-     LPAREN = 270,
-     RPAREN = 271,
-     SEMICOLON = 272,
-     ASSIGN = 273,
-     COLON = 274,
-     NUMBER = 275,
-     IDENTIFIER = 276,
+     INT = 258,
+     FLOAT = 259,
+     IF = 260,
+     ELSE = 261,
+     SWITCH = 262,
+     CASE = 263,
+     DEFAULT = 264,
+     FOR = 265,
+     WHILE = 266,
+     DO = 267,
+     BREAK = 268,
+     CONTINUE = 269,
+     LBRACE = 270,
+     RBRACE = 271,
+     LPAREN = 272,
+     RPAREN = 273,
+     SEMICOLON = 274,
+     ASSIGN = 275,
+     COLON = 276,
      GT = 277,
-     LT = 278
+     LT = 278,
+     EQ = 279,
+     NE = 280,
+     NUMBER = 281,
+     FLOAT_NUM = 282,
+     IDENTIFIER = 283,
+     END = 284,
+     PLUS = 285
    };
 #endif
 
@@ -70,16 +77,17 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 53 "parser.y"
+#line 65 "parser.y"
 
     int ival;
+    double dval;
     char *sval;
     struct ASTNode *node;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 83 "parser.tab.h"
+#line 91 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
