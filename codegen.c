@@ -78,7 +78,9 @@ void print_IC() {
     for (ICode *i = head; i; i = i->next) {
         if (i->arg2)
             printf("%s = %s %s %s\n", i->result, i->arg1, i->op, i->arg2);
+        else if (i->arg1)
+            printf("%s %s %s\n", i->op, i->arg1, i->result);
         else
-            printf("%s %s %s\n", i->result, i->op, i->arg1);
+            printf("%s %s\n", i->op, i->result);
     }
 }

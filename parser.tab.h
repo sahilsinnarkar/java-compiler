@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 26 "parser.y"
+#line 27 "parser.y"
 
     #include "ast.h"
 
@@ -76,7 +76,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 30 "parser.y"
+#line 31 "parser.y"
 
     int ival;
     double dval;

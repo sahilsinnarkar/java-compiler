@@ -3,6 +3,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include "codegen.h"
+    #include "symbol_table.h"
 
     extern int yylineno;
     extern char *yytext;
@@ -81,16 +82,19 @@ stmt:
 
 declaration:
     INT IDENTIFIER SEMICOLON {
+        add_symbol($2, "int");
         $$ = createNode("DECL", $2,
                           createNode("TYPE","int",NULL,NULL,NULL),
                           NULL, NULL);
     }
   | FLOAT IDENTIFIER SEMICOLON {
+        add_symbol($2, "float");
         $$ = createNode("DECL", $2,
                           createNode("TYPE","float",NULL,NULL,NULL),
                           NULL, NULL);
     }
 ;
+
 
 assignment:
     IDENTIFIER ASSIGN expr SEMICOLON {
@@ -112,6 +116,10 @@ expr:
         $$->dataType = strdup("float");
     }
   | IDENTIFIER {
+        if (!find_symbol($1)) {
+            yyerror("Undeclared variable used");
+            YYERROR;
+        }
         $$ = createNode("VAR", $1, NULL, NULL, NULL);
     }
   | expr PLUS expr {
