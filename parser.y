@@ -92,10 +92,18 @@ declaration:
 
 ids:
     IDENTIFIER {
+        if (find_symbol($1)) {
+            yyerror("Redeclaration of variable");
+            YYERROR;
+        }
         add_symbol($1, current_decl_type);
         $$ = createNode("DECL", $1, createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
     }
   | ids COMMA IDENTIFIER {
+        if (find_symbol($3)) {
+            yyerror("Redeclaration of variable");
+            YYERROR;
+        }
         add_symbol($3, current_decl_type);
         ASTNode *decl = createNode("DECL", $3, createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
         $1->next = decl;

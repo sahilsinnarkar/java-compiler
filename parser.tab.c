@@ -475,9 +475,9 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    48,    48,    52,    59,    65,    68,    74,    75,    76,
-      77,    78,    79,    83,    84,    88,    94,    98,   107,   115,
-     116,   117,   118,   119,   120,   125,   130,   140,   143,   149,
-     155,   161,   167
+      77,    78,    79,    83,    84,    88,    94,   102,   115,   123,
+     124,   125,   126,   127,   128,   133,   138,   148,   151,   157,
+     163,   169,   175
 };
 #endif
 
@@ -1491,6 +1491,10 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 94 "parser.y"
     {
+        if (find_symbol((yyvsp[(1) - (1)].sval))) {
+            yyerror("Redeclaration of variable");
+            YYERROR;
+        }
         add_symbol((yyvsp[(1) - (1)].sval), current_decl_type);
         (yyval.node) = createNode("DECL", (yyvsp[(1) - (1)].sval), createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
     ;}
@@ -1499,8 +1503,12 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 98 "parser.y"
+#line 102 "parser.y"
     {
+        if (find_symbol((yyvsp[(3) - (3)].sval))) {
+            yyerror("Redeclaration of variable");
+            YYERROR;
+        }
         add_symbol((yyvsp[(3) - (3)].sval), current_decl_type);
         ASTNode *decl = createNode("DECL", (yyvsp[(3) - (3)].sval), createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
         (yyvsp[(1) - (3)].node)->next = decl;
@@ -1511,7 +1519,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 107 "parser.y"
+#line 115 "parser.y"
     {
         (yyval.node) = createNode("ASSIGN", NULL,
                          createNode("VAR", (yyvsp[(1) - (4)].sval), NULL, NULL, NULL),
@@ -1522,42 +1530,42 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 115 "parser.y"
+#line 123 "parser.y"
     { (yyval.node) = createNode("BIN_OP", ">", (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node), NULL); ;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 116 "parser.y"
+#line 124 "parser.y"
     { (yyval.node) = createNode("BIN_OP", "<", (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node), NULL); ;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 117 "parser.y"
+#line 125 "parser.y"
     { (yyval.node) = createNode("BIN_OP", "+", (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node), NULL); ;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 118 "parser.y"
+#line 126 "parser.y"
     { (yyval.node) = createNode("BIN_OP", "-", (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node), NULL); ;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 119 "parser.y"
+#line 127 "parser.y"
     { (yyval.node) = (yyvsp[(2) - (3)].node); ;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 120 "parser.y"
+#line 128 "parser.y"
     {
         char buf[32]; sprintf(buf, "%d", (yyvsp[(1) - (1)].ival));
         (yyval.node) = createNode("NUM", buf, NULL, NULL, NULL);
@@ -1568,7 +1576,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 125 "parser.y"
+#line 133 "parser.y"
     {
         char buf[32]; sprintf(buf, "%.2f", (yyvsp[(1) - (1)].dval));
         (yyval.node) = createNode("FLOAT", buf, NULL, NULL, NULL);
@@ -1579,7 +1587,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 130 "parser.y"
+#line 138 "parser.y"
     {
         if (!find_symbol((yyvsp[(1) - (1)].sval))) {
             yyerror("Undeclared variable used");
@@ -1592,7 +1600,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 140 "parser.y"
+#line 148 "parser.y"
     {
         (yyval.node) = createNode("IF", NULL, (yyvsp[(3) - (5)].node), (yyvsp[(5) - (5)].node), NULL);
     ;}
@@ -1601,7 +1609,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 143 "parser.y"
+#line 151 "parser.y"
     {
         (yyval.node) = createNode("IF_ELSE", NULL, (yyvsp[(3) - (7)].node), (yyvsp[(5) - (7)].node), (yyvsp[(7) - (7)].node));
     ;}
@@ -1610,7 +1618,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 149 "parser.y"
+#line 157 "parser.y"
     {
         (yyval.node) = createNode("WHILE", NULL, (yyvsp[(3) - (5)].node), (yyvsp[(5) - (5)].node), NULL);
     ;}
@@ -1619,7 +1627,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 155 "parser.y"
+#line 163 "parser.y"
     {
         (yyval.node) = createNode("RETURN", NULL, (yyvsp[(2) - (3)].node), NULL, NULL);
     ;}
@@ -1628,7 +1636,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 161 "parser.y"
+#line 169 "parser.y"
     {
         (yyval.node) = createNode("BLOCK", NULL, (yyvsp[(2) - (3)].node), NULL, NULL);
     ;}
@@ -1637,14 +1645,14 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 175 "parser.y"
     { (yyval.node) = (yyvsp[(1) - (1)].node); ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1648 "parser.tab.c"
+#line 1656 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1856,7 +1864,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 170 "parser.y"
+#line 178 "parser.y"
 
 
 void yyerror(const char *s) {

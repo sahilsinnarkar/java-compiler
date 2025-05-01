@@ -45,7 +45,6 @@ extern int yydebug;
 \r?\n           { yylineno++; }
 
 [a-zA-Z_][a-zA-Z0-9_]* {
-    printf("TOKEN: IDENTIFIER (%s)\n", yytext);
     yylval.sval = strdup(yytext);
     return IDENTIFIER;
 }

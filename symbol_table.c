@@ -1,9 +1,8 @@
+#include "symbol_table.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbol_table.h"
 
-// Scope implementation
 typedef struct Scope {
     SymbolEntry *symbols;
     struct Scope *parent;
@@ -11,9 +10,19 @@ typedef struct Scope {
 
 static Scope *current_scope = NULL;
 
-// Symbol table functions
 void add_symbol(char *name, char *type) {
-    SymbolEntry *entry = malloc(sizeof(SymbolEntry));
+    // Check if already exists in current scope
+    SymbolEntry *entry = current_scope->symbols;
+    while (entry) {
+        if (strcmp(entry->name, name) == 0) {
+            fprintf(stderr, "Semantic error: Redeclaration of '%s'\n", name);
+            exit(1);
+        }
+        entry = entry->next;
+    }
+
+    // Add new symbol
+    entry = malloc(sizeof(SymbolEntry));
     entry->name = strdup(name);
     entry->type = strdup(type);
     entry->next = current_scope->symbols;
@@ -34,7 +43,6 @@ SymbolEntry *find_symbol(char *name) {
     return NULL;
 }
 
-// Scope management
 void push_scope() {
     Scope *new_scope = malloc(sizeof(Scope));
     new_scope->parent = current_scope;
@@ -46,27 +54,32 @@ void pop_scope() {
     if (current_scope) {
         Scope *old = current_scope;
         current_scope = current_scope->parent;
+        
+        // Free all symbols in the scope
+        SymbolEntry *entry = old->symbols;
+        while (entry) {
+            SymbolEntry *next = entry->next;
+            free(entry->name);
+            free(entry->type);
+            free(entry);
+            entry = next;
+        }
         free(old);
     }
 }
 
-// Semantic analysis
 void semantic_analysis(ASTNode *node) {
     if (!node) return;
     
-    if (strcmp(node->type, "DECL") == 0) {
-        if (find_symbol(node->value)) {
-            fprintf(stderr, "Semantic error: Redeclaration of '%s'\n", node->value);
-            exit(1);
-        }
-    }
-    else if (strcmp(node->type, "VAR") == 0) {
+    // Process current node
+    if (strcmp(node->type, "VAR") == 0) {
         if (!find_symbol(node->value)) {
             fprintf(stderr, "Semantic error: Undeclared variable '%s'\n", node->value);
             exit(1);
         }
     }
     
+    // Recursively process children
     semantic_analysis(node->left);
     semantic_analysis(node->right);
     semantic_analysis(node->next);
