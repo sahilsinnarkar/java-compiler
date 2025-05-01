@@ -91,6 +91,36 @@ void generate_IC(ASTNode *n) {
     else if (!strcmp(n->type, "BLOCK")) {
         generate_IC(n->left);
     }
+    else if (!strcmp(n->type, "FOR")) {
+        char *start_label = new_label();
+        char *end_label = new_label();
+        char *incr_label = new_label();
+        
+        // Initialization
+        generate_IC(n->left);
+        
+        // Start label
+        emit("LABEL", NULL, NULL, start_label);
+        
+        // Condition
+        char *cond = generate_expr_IC(n->right->left);
+        emit("IF_FALSE", cond, NULL, end_label);
+        
+        // Body
+        generate_IC(n->next);
+        
+        // Increment label
+        emit("LABEL", NULL, NULL, incr_label);
+        
+        // Increment
+        generate_IC(n->right->right);
+        
+        // Jump back
+        emit("GOTO", NULL, NULL, start_label);
+        
+        // End label
+        emit("LABEL", NULL, NULL, end_label);
+    }
     
     generate_IC(n->left);
     generate_IC(n->right);

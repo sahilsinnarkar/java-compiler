@@ -11,10 +11,13 @@ typedef struct ASTNode {
     struct ASTNode *left;
     struct ASTNode *right;
     struct ASTNode *next;
+    struct ASTNode *cases;  // For switch statements
+    struct ASTNode *init;  // For FOR loop initialization
+    struct ASTNode *incr; 
 } ASTNode;
 
 ASTNode* createNode(const char *type, const char *value,
                     ASTNode *left, ASTNode *right, ASTNode *next);
 void printAST(ASTNode *node, int level);
 
-#endif // AST_H
+#endif

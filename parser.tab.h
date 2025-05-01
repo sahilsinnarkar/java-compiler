@@ -32,17 +32,6 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* "%code requires" blocks.  */
-
-/* Line 1676 of yacc.c  */
-#line 19 "parser.y"
-
-    #include "ast.h"
-
-
-
-/* Line 1676 of yacc.c  */
-#line 46 "parser.tab.h"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -51,25 +40,37 @@
       know about them.  */
    enum yytokentype {
      NUMBER = 258,
-     FLOAT_NUM = 259,
-     IDENTIFIER = 260,
-     IF = 261,
-     ELSE = 262,
-     WHILE = 263,
-     RETURN = 264,
-     INT = 265,
-     FLOAT = 266,
-     LBRACE = 267,
-     RBRACE = 268,
-     LPAREN = 269,
-     RPAREN = 270,
-     SEMICOLON = 271,
-     COMMA = 272,
-     ASSIGN = 273,
-     GT = 274,
-     LT = 275,
-     PLUS = 276,
-     MINUS = 277
+     BOOL_LIT = 259,
+     FLOAT_NUM = 260,
+     IDENTIFIER = 261,
+     CHAR_LIT = 262,
+     IF = 263,
+     ELSE = 264,
+     WHILE = 265,
+     RETURN = 266,
+     FOR = 267,
+     SWITCH = 268,
+     CASE = 269,
+     DEFAULT = 270,
+     BREAK = 271,
+     INT = 272,
+     FLOAT = 273,
+     CHAR = 274,
+     BOOL = 275,
+     VOID = 276,
+     LBRACE = 277,
+     RBRACE = 278,
+     LPAREN = 279,
+     RPAREN = 280,
+     SEMICOLON = 281,
+     COMMA = 282,
+     ASSIGN = 283,
+     GT = 284,
+     LT = 285,
+     PLUS = 286,
+     MINUS = 287,
+     COLON = 288,
+     arg = 289
    };
 #endif
 
@@ -80,18 +81,19 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 23 "parser.y"
+#line 21 "parser.y"
 
     int ival;
     double dval;
     char *sval;
-    ASTNode *node;
+    char cval;
+    struct ASTNode *node;
     char *type;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 95 "parser.tab.h"
+#line 97 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

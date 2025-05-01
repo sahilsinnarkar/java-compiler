@@ -19,6 +19,16 @@ extern int yydebug;
 "return"        { printf("TOKEN: RETURN\n"); return RETURN; }
 "int"           { printf("TOKEN: INT\n"); return INT; }
 "float"         { printf("TOKEN: FLOAT\n"); return FLOAT; }
+"char"          { return CHAR; }
+"bool"          { return BOOL; }
+"true"          { yylval.ival = 1; return BOOL_LIT; }
+"false"         { yylval.ival = 0; return BOOL_LIT; }
+'.'             { yylval.ival = yytext[1]; return CHAR_LIT; }
+"for"           { return FOR; }
+"break"         { return BREAK; }
+"case"          { return CASE; }
+"default"       { return DEFAULT; }
+"switch"        { return SWITCH; }
 "{"             { printf("TOKEN: LBRACE\n"); return LBRACE; }
 "}"             { printf("TOKEN: RBRACE\n"); return RBRACE; }
 "("             { printf("TOKEN: LPAREN\n"); return LPAREN; }
