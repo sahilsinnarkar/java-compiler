@@ -5,10 +5,17 @@
 
 static ICode *head = NULL, *tail = NULL;
 static int temp_cnt = 0;
+static int label_cnt = 0;
+
+char *new_label() {
+    char buf[16];
+    sprintf(buf, "L%d", label_cnt++);
+    return strdup(buf);
+}
 
 void init_codegen() {
     head = tail = NULL;
-    temp_cnt = 0;
+    temp_cnt = label_cnt = 0;
 }
 
 char *new_temp() {
@@ -16,8 +23,7 @@ char *new_temp() {
     return strdup(buf);
 }
 
-void emit(const char *op, const char *arg1,
-          const char *arg2, const char *res) {
+void emit(const char *op, const char *arg1, const char *arg2, const char *res) {
     ICode *instr = malloc(sizeof(ICode));
     instr->op     = strdup(op);
     instr->arg1   = arg1 ? strdup(arg1) : NULL;
@@ -52,21 +58,38 @@ void generate_IC(ASTNode *n) {
     }
     else if (!strcmp(n->type, "IF")) {
         char *cond = generate_expr_IC(n->left);
-        emit("IF_FALSE", cond, NULL, "L0");
+        char *false_label = new_label();
+        emit("IF_FALSE", cond, NULL, false_label);
         generate_IC(n->right);  // then block
-        emit("LABEL", NULL, NULL, "L0");
+        emit("LABEL", NULL, NULL, false_label);
     }
     else if (!strcmp(n->type, "IF_ELSE")) {
         char *cond = generate_expr_IC(n->left);
-        emit("IF_FALSE", cond, NULL, "L0");
+        char *false_label = new_label();
+        char *end_label = new_label();
+        emit("IF_FALSE", cond, NULL, false_label);
         generate_IC(n->right);  // then block
-        emit("GOTO", NULL, NULL, "L1");
-        emit("LABEL", NULL, NULL, "L0");
+        emit("GOTO", NULL, NULL, end_label);
+        emit("LABEL", NULL, NULL, false_label);
         generate_IC(n->next);   // else block
-        emit("LABEL", NULL, NULL, "L1");
+        emit("LABEL", NULL, NULL, end_label);
+    }
+    else if (!strcmp(n->type, "WHILE")) {
+        char *start_label = new_label();
+        char *end_label = new_label();
+        emit("LABEL", NULL, NULL, start_label);
+        char *cond = generate_expr_IC(n->left);
+        emit("IF_FALSE", cond, NULL, end_label);
+        generate_IC(n->right);  // loop body
+        emit("GOTO", NULL, NULL, start_label);
+        emit("LABEL", NULL, NULL, end_label);
+    }
+    else if (!strcmp(n->type, "RETURN")) {
+        char *ret_val = generate_expr_IC(n->left);
+        emit("RETURN", ret_val, NULL, NULL);
     }
     else if (!strcmp(n->type, "BLOCK")) {
-        generate_IC(n->left);  // process statements in block
+        generate_IC(n->left);
     }
     
     generate_IC(n->left);
@@ -80,7 +103,7 @@ void print_IC() {
             printf("%s = %s %s %s\n", i->result, i->arg1, i->op, i->arg2);
         else if (i->arg1)
             printf("%s %s %s\n", i->op, i->arg1, i->result);
-        else
-            printf("%s %s\n", i->op, i->result);
+        else if (i->op)
+            printf("%s %s\n", i->op, i->result ? i->result : "");
     }
 }

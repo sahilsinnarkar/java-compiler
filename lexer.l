@@ -5,6 +5,7 @@
 #include "parser.tab.h"
 
 void yyerror(const char *s);
+extern int yydebug;
 %}
 
 %option noyywrap
@@ -12,35 +13,50 @@ void yyerror(const char *s);
 
 %%
 
-"if"            { return IF; }
-"else"          { return ELSE; }
-"int"           { return INT; }
-"float"         { return FLOAT; }
-"{"             { return LBRACE; }
-"}"             { return RBRACE; }
-"("             { return LPAREN; }
-")"             { return RPAREN; }
-";"             { return SEMICOLON; }
-"="             { return ASSIGN; }
-">"             { return GT; }
-"+"             { return PLUS; }
+"if"            { printf("TOKEN: IF\n"); return IF; }
+"else"          { printf("TOKEN: ELSE\n"); return ELSE; }
+"while"         { printf("TOKEN: WHILE\n"); return WHILE; }
+"return"        { printf("TOKEN: RETURN\n"); return RETURN; }
+"int"           { printf("TOKEN: INT\n"); return INT; }
+"float"         { printf("TOKEN: FLOAT\n"); return FLOAT; }
+"{"             { printf("TOKEN: LBRACE\n"); return LBRACE; }
+"}"             { printf("TOKEN: RBRACE\n"); return RBRACE; }
+"("             { printf("TOKEN: LPAREN\n"); return LPAREN; }
+")"             { printf("TOKEN: RPAREN\n"); return RPAREN; }
+";"             { printf("TOKEN: SEMICOLON\n"); return SEMICOLON; }
+","             { printf("TOKEN: COMMA\n"); return COMMA; }
+"="             { printf("TOKEN: ASSIGN\n"); return ASSIGN; }
+">"             { printf("TOKEN: GT\n"); return GT; }
+"<"             { printf("TOKEN: LT\n"); return LT; }
+"+"             { printf("TOKEN: PLUS\n"); return PLUS; }
+"-"             { printf("TOKEN: MINUS\n"); return MINUS; }
 
-[0-9]+\.[0-9]+  { yylval.dval = atof(yytext); return FLOAT_NUM; }
-[0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
-[\n]            { yylineno++; /* Just count lines, don't return anything */ }
+([0-9]+\.?[0-9]*)|([0-9]*\.[0-9]+)  { 
+    printf("TOKEN: FLOAT_NUM (%s)\n", yytext);
+    yylval.dval = atof(yytext); 
+    return FLOAT_NUM; 
+}
+[0-9]+          { 
+    printf("TOKEN: NUMBER (%s)\n", yytext);
+    yylval.ival = atoi(yytext); 
+    return NUMBER; 
+}
+
+\r?\n           { yylineno++; }
 
 [a-zA-Z_][a-zA-Z0-9_]* {
+    printf("TOKEN: IDENTIFIER (%s)\n", yytext);
     yylval.sval = strdup(yytext);
     return IDENTIFIER;
 }
 
-[ \t\r\n]+      { /* skip whitespace */ }
+[ \t]+          { /* skip whitespace */ }
 
-<<EOF>>         { return END; }
+<<EOF>>         { printf("TOKEN: EOF\n"); return 0; }
 
 . {
-    fprintf(stderr, "Lexical error at line %d: Unexpected character '%s'\n", 
-            yylineno, yytext);
+    fprintf(stderr, "LEXER ERROR: Unexpected char '%s' at line %d\n", yytext, yylineno);
     exit(1);
 }
+
 %%

@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 27 "parser.y"
+#line 19 "parser.y"
 
     #include "ast.h"
 
@@ -55,17 +55,21 @@
      IDENTIFIER = 260,
      IF = 261,
      ELSE = 262,
-     INT = 263,
-     FLOAT = 264,
-     LBRACE = 265,
-     RBRACE = 266,
-     LPAREN = 267,
-     RPAREN = 268,
-     SEMICOLON = 269,
-     ASSIGN = 270,
-     GT = 271,
-     PLUS = 272,
-     END = 273
+     WHILE = 263,
+     RETURN = 264,
+     INT = 265,
+     FLOAT = 266,
+     LBRACE = 267,
+     RBRACE = 268,
+     LPAREN = 269,
+     RPAREN = 270,
+     SEMICOLON = 271,
+     COMMA = 272,
+     ASSIGN = 273,
+     GT = 274,
+     LT = 275,
+     PLUS = 276,
+     MINUS = 277
    };
 #endif
 
@@ -76,17 +80,18 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 31 "parser.y"
+#line 23 "parser.y"
 
     int ival;
     double dval;
     char *sval;
     ASTNode *node;
+    char *type;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 90 "parser.tab.h"
+#line 95 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

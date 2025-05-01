@@ -10,20 +10,12 @@
     void yyerror(const char *s);
     int yylex();
 
-    /* symbol table & semantic */
-    void push_scope();
-    void pop_scope();
-    void add_symbol(char *name, char *type);
-    struct SymbolEntry *find_symbol(char *name);
-    void semantic_analysis(ASTNode *node);
-    char* get_expr_type(ASTNode *expr);
-
+    static char *current_decl_type;
     ASTNode *root;
 
-    int yydebug = 0;
+    int yydebug = 1;  // Parser debugging enabled
 %}
 
-/* Ensure ASTNode is known in generated header */
 %code requires {
     #include "ast.h"
 }
@@ -33,22 +25,27 @@
     double dval;
     char *sval;
     ASTNode *node;
+    char *type;
 }
 
 %token <ival>    NUMBER
 %token <dval>    FLOAT_NUM
 %token <sval>    IDENTIFIER
-%token           IF ELSE
+%token           IF ELSE WHILE RETURN
 %token           INT FLOAT
-%token           LBRACE RBRACE LPAREN RPAREN SEMICOLON ASSIGN GT PLUS
-%token           END
+%token           LBRACE RBRACE LPAREN RPAREN SEMICOLON COMMA ASSIGN GT LT PLUS MINUS
 
-%type <node> program stmt_list stmt declaration assignment expr condition if_stmt block
+%nonassoc GT LT
+%left PLUS MINUS
+
+%type <node> program stmt_list stmt declaration assignment expr condition if_stmt block while_stmt return_stmt
+%type <type> type_specifier
+%type <node> ids
 
 %%
 
 program:
-    stmt_list END {
+    stmt_list {
         root = $1;
         printf("Parsing completed successfully\n");
     }
@@ -76,25 +73,35 @@ stmt_list:
 stmt:
     declaration
   | if_stmt
+  | while_stmt
   | assignment
   | block
+  | return_stmt
+;
+
+type_specifier:
+    INT { current_decl_type = "int"; $$ = current_decl_type; }
+  | FLOAT { current_decl_type = "float"; $$ = current_decl_type; }
 ;
 
 declaration:
-    INT IDENTIFIER SEMICOLON {
-        add_symbol($2, "int");
-        $$ = createNode("DECL", $2,
-                          createNode("TYPE","int",NULL,NULL,NULL),
-                          NULL, NULL);
-    }
-  | FLOAT IDENTIFIER SEMICOLON {
-        add_symbol($2, "float");
-        $$ = createNode("DECL", $2,
-                          createNode("TYPE","float",NULL,NULL,NULL),
-                          NULL, NULL);
+    type_specifier ids SEMICOLON {
+        $$ = $2;
     }
 ;
 
+ids:
+    IDENTIFIER {
+        add_symbol($1, current_decl_type);
+        $$ = createNode("DECL", $1, createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
+    }
+  | ids COMMA IDENTIFIER {
+        add_symbol($3, current_decl_type);
+        ASTNode *decl = createNode("DECL", $3, createNode("TYPE", current_decl_type, NULL, NULL, NULL), NULL, NULL);
+        $1->next = decl;
+        $$ = $1;
+    }
+;
 
 assignment:
     IDENTIFIER ASSIGN expr SEMICOLON {
@@ -105,7 +112,12 @@ assignment:
 ;
 
 expr:
-    NUMBER {
+    expr GT expr         { $$ = createNode("BIN_OP", ">", $1, $3, NULL); }
+  | expr LT expr         { $$ = createNode("BIN_OP", "<", $1, $3, NULL); }
+  | expr PLUS expr       { $$ = createNode("BIN_OP", "+", $1, $3, NULL); }
+  | expr MINUS expr      { $$ = createNode("BIN_OP", "-", $1, $3, NULL); }
+  | LPAREN expr RPAREN   { $$ = $2; }
+  | NUMBER {
         char buf[32]; sprintf(buf, "%d", $1);
         $$ = createNode("NUM", buf, NULL, NULL, NULL);
         $$->dataType = strdup("int");
@@ -122,12 +134,6 @@ expr:
         }
         $$ = createNode("VAR", $1, NULL, NULL, NULL);
     }
-  | expr PLUS expr {
-        $$ = createNode("BIN_OP", "+", $1, $3, NULL);
-    }
-  | expr GT expr {
-        $$ = createNode("BIN_OP", ">", $1, $3, NULL);
-    }
 ;
 
 if_stmt:
@@ -136,6 +142,18 @@ if_stmt:
     }
   | IF LPAREN condition RPAREN block ELSE block {
         $$ = createNode("IF_ELSE", NULL, $3, $5, $7);
+    }
+;
+
+while_stmt:
+    WHILE LPAREN condition RPAREN block {
+        $$ = createNode("WHILE", NULL, $3, $5, NULL);
+    }
+;
+
+return_stmt:
+    RETURN expr SEMICOLON {
+        $$ = createNode("RETURN", NULL, $2, NULL, NULL);
     }
 ;
 
@@ -155,21 +173,13 @@ void yyerror(const char *s) {
     fprintf(stderr, "Syntax error at line %d: %s\n", yylineno, s);
 }
 
-void push_scope() {
-    printf("Pushed new scope\n");
-}
-
-void pop_scope() {
-    printf("Popped scope\n");
-}
-
-void semantic_analysis(ASTNode *node) {
-    printf("Semantic analysis placeholder\n");
-}
-
 int main() {
+    extern FILE *yyin;
+    yyin = stdin;
+    
+    fprintf(stderr, "Starting parser\n");
     push_scope();
-    yydebug = 1;
+    yydebug = 1;  // Ensure debug is enabled
     if (yyparse() == 0) {
         printAST(root, 0);
         semantic_analysis(root);
@@ -181,5 +191,6 @@ int main() {
         print_IC();
     }
     pop_scope();
+    fprintf(stderr, "Parser completed\n");
     return 0;
 }
