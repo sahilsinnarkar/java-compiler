@@ -1,7 +1,7 @@
-bison -d parser.y
+flex lexer.y
 
-flex lexer.l
+bison -d -v parser.y
 
-gcc -o compiler lex.yy.c parser.tab.c -lm
+gcc lex.yy.c parser.tab.c ast.c symbol_table.c codegen.c -o compiler
 
-compiler.exe
+compiler < test.txt

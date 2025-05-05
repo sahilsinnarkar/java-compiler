@@ -16,4 +16,4 @@ char *generate_expr_IC(ASTNode *e);
 void generate_IC(ASTNode *n);
 void print_IC();
 
-#endif // CODEGEN_H
+#endif

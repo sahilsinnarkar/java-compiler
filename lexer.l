@@ -59,7 +59,7 @@ extern int yydebug;
     return IDENTIFIER;
 }
 
-[ \t]+          { /* skip whitespace */ }
+[ \t]+          { /* whitespace */ }
 
 <<EOF>>         { printf("TOKEN: EOF\n"); return 0; }
 

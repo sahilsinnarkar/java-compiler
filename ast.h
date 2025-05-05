@@ -11,8 +11,8 @@ typedef struct ASTNode {
     struct ASTNode *left;
     struct ASTNode *right;
     struct ASTNode *next;
-    struct ASTNode *cases;  // For switch statements
-    struct ASTNode *init;  // For FOR loop initialization
+    struct ASTNode *cases;
+    struct ASTNode *init;
     struct ASTNode *incr; 
 } ASTNode;
 
