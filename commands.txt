@@ -1,4 +1,4 @@
-flex lexer.y
+flex lexer.l
 
 bison -d -v parser.y
 

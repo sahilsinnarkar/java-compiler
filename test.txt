@@ -1,16 +1,7 @@
 {
-    int a, b, c;
-    a = 10;
-    b = 20;
-    c = a + b;
-    
-    if (c > 25) {
-        c = c - 5;
-    } else {
-        c = c + 5;
-    }
-
-    while (a < c) {
-        a = a + 1;
+    int a;
+    a = 0;
+    if(a < 10) {
+        a=5;
     }
 }
